@@ -15,7 +15,7 @@ public interface ToDoListService {
 
     Optional<ToDoItem> getToDoItemById(UUID id);
 
-    void deleteToDoItem(UUID id);
+    int deleteToDoItemById(UUID id);
 
     int updateToDoItemById(UUID id, String title, String description, ItemStatus status);
 }

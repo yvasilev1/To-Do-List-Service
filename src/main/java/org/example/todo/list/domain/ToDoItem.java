@@ -1,10 +1,12 @@
 package org.example.todo.list.domain;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import org.example.todo.list.validation.ValidateStatus;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.proxy.HibernateProxy;
 import org.hibernate.type.SqlTypes;
@@ -19,14 +21,16 @@ import java.util.UUID;
 @Entity(name = "t_todoitem")
 public class ToDoItem {
 
-
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "id", nullable = false)
     @JdbcTypeCode(SqlTypes.UUID)
     private UUID id;
+    @NotBlank(message = "Title is mandatory")
     private String title;
+    @NotBlank(message = "Description is mandatory")
     private String description;
+    @ValidateStatus
     private ItemStatus status;
 
     @Override

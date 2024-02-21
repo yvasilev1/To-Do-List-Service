@@ -1,5 +1,6 @@
 package org.example.todo.list.controller;
 
+import jakarta.validation.Valid;
 import org.example.todo.list.domain.ToDoItem;
 import org.example.todo.list.service.ToDoListService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,12 +22,12 @@ public class ToDoListController {
     }
 
     @PostMapping("/todolist/addToDoItem")
-    public ToDoItem addToDoItem(@RequestBody ToDoItem toDoItem) {
+    public ToDoItem addToDoItem(@Valid @RequestBody ToDoItem toDoItem) {
         return toDoListService.addToDoItem(toDoItem);
     }
 
     @PutMapping("/todolist/updateById/{id}")
-    public ResponseEntity<HttpStatus> updateToDoItemById(@PathVariable("id") UUID id, @RequestBody ToDoItem toDoItem) {
+    public ResponseEntity<HttpStatus> updateToDoItemById(@PathVariable("id") UUID id, @Valid @RequestBody ToDoItem toDoItem) {
         int success = toDoListService.updateToDoItemById(id, toDoItem.getTitle(), toDoItem.getDescription(), toDoItem.getStatus());
 
         if (success == 1) {
@@ -47,7 +48,11 @@ public class ToDoListController {
 
     @DeleteMapping("/todolist/deleteToDoItem/{id}")
     public ResponseEntity<HttpStatus> deleteToDoItem(@PathVariable("id") UUID id) {
-        toDoListService.deleteToDoItem(id);
-        return new ResponseEntity<>(HttpStatus.ACCEPTED);
+        int deletedItems = toDoListService.deleteToDoItemById(id);
+
+        if (deletedItems > 0) {
+            return new ResponseEntity<>(HttpStatus.ACCEPTED);
+        }
+        return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }

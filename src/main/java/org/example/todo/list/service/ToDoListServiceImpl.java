@@ -40,8 +40,8 @@ public class ToDoListServiceImpl implements ToDoListService {
     }
 
     @Override
-    public void deleteToDoItem(UUID id) {
-       toDoListRepository.deleteById(id);
+    public int deleteToDoItemById(UUID id) {
+       return toDoListRepository.deleteToDoItemById(id);
     }
 
     @Override

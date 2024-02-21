@@ -29,6 +29,8 @@ public interface ToDoListRepository extends CrudRepository<ToDoItem, UUID> {
     @Override
     Iterable<ToDoItem> findAll();
 
-    @Override
-    void deleteById(UUID uuid);
+    @Transactional
+    @Modifying
+    @Query("delete from t_todoitem t where t.id = ?1")
+    int deleteToDoItemById(@NonNull UUID id);
 }
