@@ -2,6 +2,7 @@ package org.example.todo.list.domain;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -30,8 +31,8 @@ public class ToDoItem {
     private String title;
     @NotBlank(message = "Description is mandatory")
     private String description;
-    @ValidateStatus
-    private ItemStatus status;
+    @ValidateStatus(enumClass = ItemStatus.class)
+    private String status;
 
     @Override
     public final boolean equals(Object o) {

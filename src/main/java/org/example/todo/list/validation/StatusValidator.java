@@ -2,13 +2,24 @@ package org.example.todo.list.validation;
 
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
-import org.example.todo.list.domain.ItemStatus;
+
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 
-public class StatusValidator implements ConstraintValidator<ValidateStatus, ItemStatus> {
+public class StatusValidator implements ConstraintValidator<ValidateStatus, String> {
+    private List<String> statuses;
+
     @Override
-    public boolean isValid(ItemStatus itemStatus, ConstraintValidatorContext constraintValidatorContext) {
+    public void initialize(ValidateStatus constraintAnnotation) {
+        statuses = Stream.of(constraintAnnotation.enumClass().getEnumConstants())
+                .map(Enum::name)
+                .collect(Collectors.toList());
+    }
 
-        return itemStatus != null && ItemStatus.containsStatus(itemStatus);
+    @Override
+    public boolean isValid(String value, ConstraintValidatorContext constraintValidatorContext) {
+        return value != null && statuses.contains(value);
     }
 }

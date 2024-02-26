@@ -1,6 +1,5 @@
 package org.example.todo.list.service;
 
-import org.example.todo.list.domain.ItemStatus;
 import org.example.todo.list.domain.ToDoItem;
 
 import java.util.List;
@@ -17,5 +16,5 @@ public interface ToDoListService {
 
     int deleteToDoItemById(UUID id);
 
-    int updateToDoItemById(UUID id, String title, String description, ItemStatus status);
+    int updateToDoItemById(UUID id, String title, String description, String status);
 }

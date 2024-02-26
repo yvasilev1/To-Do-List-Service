@@ -1,9 +1,7 @@
 package org.example.todo.list.service;
 
 import org.example.todo.list.dao.ToDoListRepository;
-import org.example.todo.list.domain.ItemStatus;
 import org.example.todo.list.domain.ToDoItem;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -17,7 +15,6 @@ public class ToDoListServiceImpl implements ToDoListService {
 
     public ToDoListRepository toDoListRepository;
 
-    @Autowired
     public ToDoListServiceImpl(ToDoListRepository toDoListRepository) {
         this.toDoListRepository = toDoListRepository;
     }
@@ -41,11 +38,11 @@ public class ToDoListServiceImpl implements ToDoListService {
 
     @Override
     public int deleteToDoItemById(UUID id) {
-       return toDoListRepository.deleteToDoItemById(id);
+        return toDoListRepository.deleteToDoItemById(id);
     }
 
     @Override
-    public int updateToDoItemById(UUID id, String title, String description, ItemStatus status) {
+    public int updateToDoItemById(UUID id, String title, String description, String status) {
         return toDoListRepository.updateById(title, description, status, id);
     }
 }

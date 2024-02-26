@@ -1,7 +1,8 @@
 package org.example.todo.list.controller;
 
 
-import org.example.todo.list.domain.error.Error;
+import org.example.todo.list.domain.error.ErrorResponse;
+import org.springframework.beans.TypeMismatchException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
@@ -9,11 +10,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
-import org.springframework.web.bind.MissingPathVariableException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
-import org.springframework.web.servlet.NoHandlerFoundException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import java.util.List;
 
@@ -26,28 +26,26 @@ public class ErrorController extends ResponseEntityExceptionHandler {
         List<ObjectError> errors = ex.getBindingResult().getAllErrors();
         String errorMessage = errors.isEmpty() ? "" : errors.getFirst().getDefaultMessage();
 
-       return handleExceptionInternal(ex, new Error(HttpStatus.BAD_REQUEST.name(), errorMessage), headers, HttpStatus.BAD_REQUEST,request);
+        return handleExceptionInternal(ex, new ErrorResponse(HttpStatus.BAD_REQUEST.value(), errorMessage), headers, HttpStatus.BAD_REQUEST, request);
+    }
+
+    @Override
+    protected ResponseEntity<Object> handleTypeMismatch(TypeMismatchException ex, HttpHeaders headers, HttpStatusCode status, WebRequest request) {
+        return handleExceptionInternal(ex, new ErrorResponse(HttpStatus.BAD_REQUEST.value(), ex.getCause().getMessage()), headers, HttpStatus.BAD_REQUEST, request);
+    }
+
+    @Override
+    protected ResponseEntity<Object> handleNoResourceFoundException(NoResourceFoundException ex, HttpHeaders headers, HttpStatusCode status, WebRequest request) {
+        return handleExceptionInternal(ex, new ErrorResponse(HttpStatus.NOT_FOUND.value(), ex.getMessage()), headers, HttpStatus.BAD_REQUEST, request);
     }
 
     @Override
     protected ResponseEntity<Object> handleHttpRequestMethodNotSupported(HttpRequestMethodNotSupportedException ex, HttpHeaders headers, HttpStatusCode status, WebRequest request) {
-        return super.handleHttpRequestMethodNotSupported(ex, headers, status, request);
-    }
-
-    @Override
-    protected ResponseEntity<Object> handleMissingPathVariable(MissingPathVariableException ex, HttpHeaders headers, HttpStatusCode status, WebRequest request) {
-        return super.handleMissingPathVariable(ex, headers, status, request);
-    }
-
-    @Override
-    protected ResponseEntity<Object> handleNoHandlerFoundException(NoHandlerFoundException ex, HttpHeaders headers, HttpStatusCode status, WebRequest request) {
-        return super.handleNoHandlerFoundException(ex, headers, status, request);
+        return handleExceptionInternal(ex, new ErrorResponse(HttpStatus.METHOD_NOT_ALLOWED.value(), ex.getMessage()), headers, HttpStatus.METHOD_NOT_ALLOWED, request);
     }
 
     @Override
     protected ResponseEntity<Object> handleExceptionInternal(Exception ex, Object body, HttpHeaders headers, HttpStatusCode statusCode, WebRequest request) {
         return super.handleExceptionInternal(ex, body, headers, statusCode, request);
     }
-
-
 }

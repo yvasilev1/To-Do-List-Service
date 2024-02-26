@@ -21,7 +21,7 @@ public interface ToDoListRepository extends CrudRepository<ToDoItem, UUID> {
     @Transactional
     @Modifying
     @Query("update t_todoitem t set t.title = ?1, t.description = ?2, t.status = ?3 where t.id = ?4")
-    int updateById(@NonNull String title, @NonNull String description, @NonNull ItemStatus status, @NonNull UUID id);
+    int updateById(@NonNull String title, @NonNull String description, @NonNull String status, @NonNull UUID id);
 
     @Override
     Optional<ToDoItem> findById(UUID uuid);
