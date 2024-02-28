@@ -1,9 +1,9 @@
 package org.example.todo.list.controller;
 
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import org.example.todo.list.domain.ToDoItem;
+import org.example.todo.list.domain.error.ErrorResponse;
+import org.example.todo.list.domain.error.NotFoundException;
 import org.example.todo.list.service.ToDoListService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -30,13 +30,15 @@ public class ToDoListController {
     }
 
     @PutMapping("/updateById/{id}")
-    public ResponseEntity<HttpStatus> updateToDoItemById(@NotNull(message = "Id cannot be null") @PathVariable("id") UUID id, @Valid @RequestBody ToDoItem toDoItem) {
+    @ResponseBody
+    public Optional<ToDoItem> updateToDoItemById(@PathVariable("id") UUID id, @Valid @RequestBody ToDoItem toDoItem) {
         int success = toDoListService.updateToDoItemById(id, toDoItem.getTitle(), toDoItem.getDescription(), toDoItem.getStatus());
 
         if (success == 1) {
-            return new ResponseEntity<>(HttpStatus.ACCEPTED);
+            return toDoListService.getToDoItemById(id);
         }
-        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+
+        throw new NotFoundException(new ErrorResponse(404, "No TODO item found with provided Id"));
     }
 
     @GetMapping(value = "/getAllToDoItems", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -56,8 +58,8 @@ public class ToDoListController {
         int deletedItems = toDoListService.deleteToDoItemById(id);
 
         if (deletedItems > 0) {
-            return new ResponseEntity<>(HttpStatus.ACCEPTED);
+            return new ResponseEntity<>(HttpStatus.OK);
         }
-        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        throw new NotFoundException(new ErrorResponse(404, "No TODO item found with provided Id"));
     }
 }

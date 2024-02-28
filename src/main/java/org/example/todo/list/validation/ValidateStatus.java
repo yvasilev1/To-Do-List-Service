@@ -4,7 +4,10 @@ package org.example.todo.list.validation;
 import jakarta.validation.Constraint;
 import jakarta.validation.Payload;
 
-import java.lang.annotation.*;
+import java.lang.annotation.Documented;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 import static java.lang.annotation.ElementType.*;
 
@@ -16,7 +19,7 @@ import static java.lang.annotation.ElementType.*;
 public @interface ValidateStatus {
     Class<? extends Enum<?>> enumClass();
 
-    String message() default "contact/itemStatus not in valid can be - PENDING, COMPLETED, IN_PROGRESS";
+    String message() default "contact/itemStatus not valid can be - PENDING, COMPLETED, IN_PROGRESS";
 
     Class<?>[] groups() default {};
 

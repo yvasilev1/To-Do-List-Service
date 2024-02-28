@@ -2,6 +2,8 @@ package org.example.todo.list.service;
 
 import org.example.todo.list.dao.ToDoListRepository;
 import org.example.todo.list.domain.ToDoItem;
+import org.example.todo.list.domain.error.ErrorResponse;
+import org.example.todo.list.domain.error.NotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -33,7 +35,13 @@ public class ToDoListServiceImpl implements ToDoListService {
 
     @Override
     public Optional<ToDoItem> getToDoItemById(UUID id) {
-        return toDoListRepository.findById(id);
+        Optional<ToDoItem> toDoItem = toDoListRepository.findById(id);
+
+        if (toDoItem.isPresent()) {
+            return toDoItem;
+        }
+
+        throw new NotFoundException(new ErrorResponse(404, "No TODO item found with provided Id"));
     }
 
     @Override
