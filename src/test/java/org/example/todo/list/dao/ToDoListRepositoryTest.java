@@ -1,6 +1,6 @@
 package org.example.todo.list.dao;
 
-class ToDoListRepositoryTest {
+public class ToDoListRepositoryTest {
 
 
 

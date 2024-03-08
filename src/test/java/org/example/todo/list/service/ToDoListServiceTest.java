@@ -1,7 +1,6 @@
 package org.example.todo.list.service;
 
 import org.example.todo.list.dao.ToDoListRepository;
-import org.example.todo.list.domain.ItemStatus;
 import org.example.todo.list.domain.ToDoItem;
 import org.example.todo.list.domain.error.NotFoundException;
 import org.junit.jupiter.api.AfterEach;
@@ -22,7 +21,7 @@ import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class ToDoListServiceTest {
+public class ToDoListServiceTest {
 
     @Mock
     private ToDoListRepository toDoListRepository;
@@ -133,10 +132,10 @@ class ToDoListServiceTest {
         assertEquals(1, response);
     }
 
-    private ToDoItem createItem(UUID id, String status, String title, String description) {
+    public static ToDoItem createItem(UUID id, String status, String title, String description) {
         ToDoItem toDoItem = new ToDoItem();
         toDoItem.setId(id);
-        toDoItem.setStatus(String.valueOf(ItemStatus.valueOf(status)));
+        toDoItem.setStatus(status);
         toDoItem.setTitle(title);
         toDoItem.setDescription(description);
         return toDoItem;

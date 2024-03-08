@@ -15,7 +15,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/todolist")
+@RequestMapping(value = "/todolist")
 public class ToDoListController {
     public final ToDoListService toDoListService;
 

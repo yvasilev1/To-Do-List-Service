@@ -19,7 +19,7 @@ import static java.lang.annotation.ElementType.*;
 public @interface ValidateStatus {
     Class<? extends Enum<?>> enumClass();
 
-    String message() default "contact/itemStatus not valid can be - PENDING, COMPLETED, IN_PROGRESS";
+    String message() default "itemStatus not valid can be - PENDING, COMPLETED, IN_PROGRESS";
 
     Class<?>[] groups() default {};
 
