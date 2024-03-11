@@ -2,6 +2,8 @@ package org.example.todo.list.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.example.todo.list.domain.ToDoItem;
+import org.example.todo.list.domain.error.ErrorResponse;
+import org.example.todo.list.domain.error.NotFoundException;
 import org.example.todo.list.service.ToDoListService;
 import org.example.todo.list.service.ToDoListServiceTest;
 import org.junit.jupiter.api.BeforeEach;
@@ -16,13 +18,14 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -53,6 +56,16 @@ public class ToDoListControllerTest {
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .content("{}"))
                 .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void addToDoItem_methodTypeNotAllowed() throws Exception {
+
+        mockMvc.perform(get("/todolist/addToDoItem")
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                        .content("{}"))
+                .andExpect(status().isMethodNotAllowed())
+                .andExpect(jsonPath("$.message").value("Request method 'GET' is not supported"));
     }
 
     @Test
@@ -92,7 +105,7 @@ public class ToDoListControllerTest {
     }
 
     @Test
-    public void addToDoItem_addToDoItem_descriptionIsEmpty() throws Exception {
+    public void addToDoItem_descriptionIsEmpty() throws Exception {
 
         ToDoItem toDoItem = ToDoListServiceTest.createItem(id, "PENDING", "SomeTitle", "");
 
@@ -116,7 +129,7 @@ public class ToDoListControllerTest {
     }
 
     @Test
-    public void addToDoItem_addToDoItem_statusIsEmpty() throws Exception {
+    public void addToDoItem_statusIsEmpty() throws Exception {
 
         ToDoItem toDoItem = ToDoListServiceTest.createItem(id, "", "SomeTitle", "SomeDescription");
 
@@ -128,7 +141,7 @@ public class ToDoListControllerTest {
     }
 
     @Test
-    public void addToDoItem_addToDoItem_statusIsInvalid() throws Exception {
+    public void addToDoItem_statusIsInvalid() throws Exception {
 
         ToDoItem toDoItem = ToDoListServiceTest.createItem(id, "BLAH", "SomeTitle", "SomeDescription");
 
@@ -157,6 +170,14 @@ public class ToDoListControllerTest {
     }
 
     @Test
+    public void getAllToDoItems_methodTypeNotAllowed() throws Exception {
+
+        mockMvc.perform(post("/todolist/getAllToDoItems"))
+                .andExpect(status().isMethodNotAllowed())
+                .andExpect(jsonPath("$.message").value("Request method 'POST' is not supported"));
+    }
+
+    @Test
     public void getAllToDoItems_noToDoItemsReturned() throws Exception {
 
         when(toDoListService.getAllToDoItems()).thenReturn(new ArrayList<>());
@@ -182,6 +203,222 @@ public class ToDoListControllerTest {
                 .andExpect(jsonPath("$", hasSize(2)))
                 .andExpect(jsonPath("$[0].id").value(id.toString()))
                 .andExpect(jsonPath("$[1].id").value(secondToDoItemId.toString()));
+    }
+
+    @Test
+    public void getToDoItemById_methodTypeNotAllowed() throws Exception {
+        mockMvc.perform(post("/todolist/getToDoItem/{id}", id))
+                .andExpect(status().isMethodNotAllowed())
+                .andExpect(jsonPath("$.message").value("Request method 'POST' is not supported"));
+    }
+
+    @Test
+    public void getToDoItemById_invalidIdTypeProvided() throws Exception {
+        mockMvc.perform(get("/todolist/getToDoItem/{id}", "invalid"))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.message").value("Invalid UUID string: invalid"));
+    }
+
+    @Test
+    public void getToDoItemById_noDoItemWithProvidedId() throws Exception {
+
+        when(toDoListService.getToDoItemById(any(UUID.class))).thenThrow(new NotFoundException(new ErrorResponse(404, "No TODO item found with provided Id")));
+
+        mockMvc.perform(get("/todolist/getToDoItem/{id}", id))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.message").value("No TODO item found with provided Id"));
+    }
+
+    @Test
+    public void getToDoItemById_success() throws Exception {
+
+        ToDoItem toDoItem = ToDoListServiceTest.createItem(id, "PENDING", "SomeTitle", "SomeDescription");
+
+        when(toDoListService.getToDoItemById(any(UUID.class))).thenReturn(Optional.of(toDoItem));
+
+        mockMvc.perform(get("/todolist/getToDoItem/{id}", id))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(id.toString()))
+                .andExpect(jsonPath("$.title").value(toDoItem.getTitle()))
+                .andExpect(jsonPath("$.description").value(toDoItem.getDescription()))
+                .andExpect(jsonPath("$.status").value(toDoItem.getStatus()));
+    }
+
+    @Test
+    public void deleteToDoItemById_methodTypeNotAllowed() throws Exception {
+        mockMvc.perform(get("/todolist/deleteToDoItem/{id}", id))
+                .andExpect(status().isMethodNotAllowed())
+                .andExpect(jsonPath("$.message").value("Request method 'GET' is not supported"));
+    }
+
+    @Test
+    public void deleteToDoItemById_invalidIdTypeProvided() throws Exception {
+        mockMvc.perform(delete("/todolist/deleteToDoItem/{id}", "invalid"))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.message").value("Invalid UUID string: invalid"));
+    }
+
+    @Test
+    public void deleteToDoItemById_noDoItemWithProvidedId() throws Exception {
+
+        when(toDoListService.deleteToDoItemById(any(UUID.class))).thenReturn(0);
+
+        mockMvc.perform(delete("/todolist/deleteToDoItem/{id}", id))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.message").value("No TODO item found with provided Id"));
+    }
+
+    @Test
+    public void deleteToDoItemById_success() throws Exception {
+
+        when(toDoListService.deleteToDoItemById(any(UUID.class))).thenReturn(1);
+
+        mockMvc.perform(delete("/todolist/deleteToDoItem/{id}", id))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    public void updateToDoItemById_methodTypeNotAllowed() throws Exception {
+        mockMvc.perform(get("/todolist/updateById/{id}", id)
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                        .content("{}"))
+                .andExpect(status().isMethodNotAllowed())
+                .andExpect(jsonPath("$.message").value("Request method 'GET' is not supported"));
+    }
+
+    @Test
+    public void updateToDoItemById_invalidIdTypeProvided() throws Exception {
+        mockMvc.perform(put("/todolist/updateById/{id}", "Invalid")
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                        .content("{}"))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.message").value("Invalid UUID string: Invalid"));
+    }
+
+    @Test
+    public void updateToDoItemById_invalidRequestPayload() throws Exception {
+
+        mockMvc.perform(put("/todolist/updateById{id}", id)
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                        .content("{}"))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void updateToDoItemById_titleIsMissing() throws Exception {
+
+        ToDoItem toDoItem = ToDoListServiceTest.createItem(id, "PENDING", null, "SomeDescription");
+
+        mockMvc.perform(put("/todolist/updateById/{id}", id)
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                        .content(objectMapper.writeValueAsString(toDoItem)))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.message").value("Title is mandatory"));
+    }
+
+    @Test
+    public void updateToDoItemById_titleIsEmpty() throws Exception {
+
+        ToDoItem toDoItem = ToDoListServiceTest.createItem(id, "PENDING", "", "SomeDescription");
+
+        mockMvc.perform(put("/todolist/updateById/{id}", id)
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                        .content(objectMapper.writeValueAsString(toDoItem)))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.message").value("Title is mandatory"));
+    }
+
+    @Test
+    public void updateToDoItemById_descriptionIsMissing() throws Exception {
+
+        ToDoItem toDoItem = ToDoListServiceTest.createItem(id, "PENDING", "SomeTitle", null);
+
+        mockMvc.perform(put("/todolist/updateById/{id}", id)
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                        .content(objectMapper.writeValueAsString(toDoItem)))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.message").value("Description is mandatory"));
+    }
+
+    @Test
+    public void updateToDoItemById_descriptionIsEmpty() throws Exception {
+
+        ToDoItem toDoItem = ToDoListServiceTest.createItem(id, "PENDING", "SomeTitle", "");
+
+        mockMvc.perform(put("/todolist/updateById/{id}", id)
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                        .content(objectMapper.writeValueAsString(toDoItem)))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.message").value("Description is mandatory"));
+    }
+
+    @Test
+    public void updateToDoItemById_statusMissing() throws Exception {
+
+        ToDoItem toDoItem = ToDoListServiceTest.createItem(id, null, "SomeTitle", "SomeDescription");
+
+        mockMvc.perform(put("/todolist/updateById/{id}", id)
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                        .content(objectMapper.writeValueAsString(toDoItem)))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.message").value("itemStatus not valid can be - PENDING, COMPLETED, IN_PROGRESS"));
+    }
+
+    @Test
+    public void updateToDoItemById_statusIsEmpty() throws Exception {
+
+        ToDoItem toDoItem = ToDoListServiceTest.createItem(id, "", "SomeTitle", "SomeDescription");
+
+        mockMvc.perform(put("/todolist/updateById/{id}", id)
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                        .content(objectMapper.writeValueAsString(toDoItem)))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.message").value("itemStatus not valid can be - PENDING, COMPLETED, IN_PROGRESS"));
+    }
+
+    @Test
+    public void updateToDoItemById_statusIsInvalid() throws Exception {
+
+        ToDoItem toDoItem = ToDoListServiceTest.createItem(id, "BLAH", "SomeTitle", "SomeDescription");
+
+        mockMvc.perform(put("/todolist/updateById/{id}", id)
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                        .content(objectMapper.writeValueAsString(toDoItem)))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.message").value("itemStatus not valid can be - PENDING, COMPLETED, IN_PROGRESS"));
+    }
+
+    @Test
+    public void updateToDoItemById_noDoItemWithProvidedId() throws Exception {
+
+        ToDoItem toDoItem = ToDoListServiceTest.createItem(id, "PENDING", "SomeTitle", "SomeDescription");
+
+        when(toDoListService.updateToDoItemById(any(UUID.class), anyString(), anyString(), anyString())).thenReturn(0);
+
+        mockMvc.perform(put("/todolist/updateById/{id}", id)
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                        .content(objectMapper.writeValueAsString(toDoItem)))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.message").value("No TODO item found with provided Id"));
+    }
+
+    @Test
+    public void updateToDoItemById_success() throws Exception {
+
+        ToDoItem toDoItem = ToDoListServiceTest.createItem(id, "PENDING", "SomeTitle", "SomeDescription");
+
+        when(toDoListService.updateToDoItemById(any(UUID.class), anyString(), anyString(), anyString())).thenReturn(1);
+
+        when(toDoListService.getToDoItemById(any(UUID.class))).thenReturn(Optional.of(toDoItem));
+
+        mockMvc.perform(put("/todolist/updateById/{id}", id)
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                        .content(objectMapper.writeValueAsString(toDoItem)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(id.toString()))
+                .andExpect(jsonPath("$.title").value(toDoItem.getTitle()))
+                .andExpect(jsonPath("$.description").value(toDoItem.getDescription()))
+                .andExpect(jsonPath("$.status").value(toDoItem.getStatus()));
     }
 
 }
