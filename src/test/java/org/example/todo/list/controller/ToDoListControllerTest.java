@@ -50,6 +50,16 @@ public class ToDoListControllerTest {
     }
 
     @Test
+    public void addToDoItem_methodTypeNotAllowed() throws Exception {
+
+        mockMvc.perform(get("/todolist/addToDoItem")
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                        .content("{}"))
+                .andExpect(status().isMethodNotAllowed())
+                .andExpect(jsonPath("$.message").value("Request method 'GET' is not supported"));
+    }
+
+    @Test
     public void addToDoItem_emptyRequestBody() throws Exception {
 
         mockMvc.perform(post("/todolist/addToDoItem")
@@ -59,13 +69,13 @@ public class ToDoListControllerTest {
     }
 
     @Test
-    public void addToDoItem_methodTypeNotAllowed() throws Exception {
+    public void addToDoItem_invalidRequestBody() throws Exception {
 
-        mockMvc.perform(get("/todolist/addToDoItem")
+        mockMvc.perform(post("/todolist/addToDoItem")
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
-                        .content("{}"))
-                .andExpect(status().isMethodNotAllowed())
-                .andExpect(jsonPath("$.message").value("Request method 'GET' is not supported"));
+                        .content("{\"title\": \"SomeTitle\",\"description\": \"SomeDescription\"\"status\": \"PENDING\"}"))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.message").value("JSON parse error: Unexpected character ('\"' (code 34)): was expecting comma to separate Object entries"));
     }
 
     @Test
@@ -296,12 +306,22 @@ public class ToDoListControllerTest {
     }
 
     @Test
-    public void updateToDoItemById_invalidRequestPayload() throws Exception {
+    public void updateToDoItemById_emptyRequestPayload() throws Exception {
 
-        mockMvc.perform(put("/todolist/updateById{id}", id)
+        mockMvc.perform(put("/todolist/updateById/{id}", id)
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .content("{}"))
                 .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void updateToDoItemById_invalidRequestPayload() throws Exception {
+
+        mockMvc.perform(put("/todolist/updateById/{id}", id)
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                        .content("{\"title\": \"SomeTitle\",\"description\": \"SomeDescription\"\"status\": \"PENDING\"}"))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.message").value("JSON parse error: Unexpected character ('\"' (code 34)): was expecting comma to separate Object entries"));
     }
 
     @Test

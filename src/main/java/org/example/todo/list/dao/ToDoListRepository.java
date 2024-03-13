@@ -1,6 +1,5 @@
 package org.example.todo.list.dao;
 
-import org.example.todo.list.domain.ItemStatus;
 import org.example.todo.list.domain.ToDoItem;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;

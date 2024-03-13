@@ -2,12 +2,14 @@ package org.example.todo.list.validation;
 
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
+import lombok.Setter;
 
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 
+@Setter
 public class StatusValidator implements ConstraintValidator<ValidateStatus, String> {
     private List<String> statuses;
 
@@ -20,6 +22,6 @@ public class StatusValidator implements ConstraintValidator<ValidateStatus, Stri
 
     @Override
     public boolean isValid(String value, ConstraintValidatorContext constraintValidatorContext) {
-        return value != null && statuses.contains(value);
+        return value != null && statuses.contains(value.toUpperCase());
     }
 }
