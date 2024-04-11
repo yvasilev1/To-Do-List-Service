@@ -1,9 +1,9 @@
-package org.example.todo.list.dao;
+package org.example.house.manager.todolist.dao;
 
 
-import org.example.todo.list.domain.ItemStatus;
-import org.example.todo.list.domain.ToDoItem;
-import org.example.todo.list.service.ToDoListServiceTest;
+import org.example.house.manager.todolist.domain.ItemStatus;
+import org.example.house.manager.todolist.domain.ToDoItem;
+import org.example.house.manager.todolist.service.ToDoListServiceTest;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;

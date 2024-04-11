@@ -1,4 +1,4 @@
-package org.example.todo.list.validation;
+package org.example.house.manager.validation;
 
 
 import jakarta.validation.Constraint;

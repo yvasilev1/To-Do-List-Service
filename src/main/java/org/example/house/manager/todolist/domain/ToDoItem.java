@@ -1,13 +1,12 @@
-package org.example.todo.list.domain;
+package org.example.house.manager.todolist.domain;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
-
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
-import org.example.todo.list.validation.ValidateStatus;
+import org.example.house.manager.validation.ValidateStatus;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.proxy.HibernateProxy;
 import org.hibernate.type.SqlTypes;

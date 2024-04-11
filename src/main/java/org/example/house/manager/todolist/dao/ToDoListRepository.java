@@ -1,6 +1,6 @@
-package org.example.todo.list.dao;
+package org.example.house.manager.todolist.dao;
 
-import org.example.todo.list.domain.ToDoItem;
+import org.example.house.manager.todolist.domain.ToDoItem;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;

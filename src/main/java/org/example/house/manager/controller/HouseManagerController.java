@@ -1,10 +1,10 @@
-package org.example.todo.list.controller;
+package org.example.house.manager.controller;
 
 import jakarta.validation.Valid;
-import org.example.todo.list.domain.ToDoItem;
-import org.example.todo.list.domain.error.ErrorResponse;
-import org.example.todo.list.domain.error.NotFoundException;
-import org.example.todo.list.service.ToDoListService;
+import org.example.house.manager.error.ErrorResponse;
+import org.example.house.manager.error.NotFoundException;
+import org.example.house.manager.todolist.ToDoListService;
+import org.example.house.manager.todolist.domain.ToDoItem;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -15,21 +15,21 @@ import java.util.Optional;
 import java.util.UUID;
 
 @RestController
-@RequestMapping(value = "/todolist")
-public class ToDoListController {
+@RequestMapping(value = "/housemanager")
+public class HouseManagerController {
     public final ToDoListService toDoListService;
 
-    public ToDoListController(ToDoListService toDoListService) {
+    public HouseManagerController(ToDoListService toDoListService) {
         this.toDoListService = toDoListService;
     }
 
-    @PostMapping(value = "/addToDoItem", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/todolist/addToDoItem", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public ToDoItem addToDoItem(@Valid @RequestBody ToDoItem toDoItem) {
         return toDoListService.addToDoItem(toDoItem);
     }
 
-    @PutMapping("/updateById/{id}")
+    @PutMapping("/todolist/updateById/{id}")
     @ResponseBody
     public Optional<ToDoItem> updateToDoItemById(@PathVariable("id") UUID id, @Valid @RequestBody ToDoItem toDoItem) {
         int success = toDoListService.updateToDoItemById(id, toDoItem.getTitle(), toDoItem.getDescription(), toDoItem.getStatus());
@@ -41,19 +41,19 @@ public class ToDoListController {
         throw new NotFoundException(new ErrorResponse(404, "No TODO item found with provided Id"));
     }
 
-    @GetMapping(value = "/getAllToDoItems", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/todolist/getAllToDoItems", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public List<ToDoItem> getAllToDoItems() {
         return toDoListService.getAllToDoItems();
     }
 
-    @GetMapping(value = "/getToDoItem/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/todolist/getToDoItem/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public Optional<ToDoItem> getToDoItemById(@PathVariable("id") UUID id) {
         return toDoListService.getToDoItemById(id);
     }
 
-    @DeleteMapping(value = "/deleteToDoItem/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @DeleteMapping(value = "/todolist/deleteToDoItem/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<HttpStatus> deleteToDoItem(@PathVariable("id") UUID id) {
         int deletedItems = toDoListService.deleteToDoItemById(id);
 

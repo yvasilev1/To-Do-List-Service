@@ -1,4 +1,4 @@
-package org.example.todo.list.domain.error;
+package org.example.house.manager.error;
 
 import lombok.Getter;
 

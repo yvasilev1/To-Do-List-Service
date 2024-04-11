@@ -1,8 +1,8 @@
-package org.example.todo.list.controller;
+package org.example.house.manager.controller;
 
 
-import org.example.todo.list.domain.error.ErrorResponse;
-import org.example.todo.list.domain.error.NotFoundException;
+import org.example.house.manager.error.ErrorResponse;
+import org.example.house.manager.error.NotFoundException;
 import org.springframework.beans.TypeMismatchException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;

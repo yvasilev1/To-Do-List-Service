@@ -1,6 +1,6 @@
-package org.example.todo.list.service;
+package org.example.house.manager.todolist;
 
-import org.example.todo.list.domain.ToDoItem;
+import org.example.house.manager.todolist.domain.ToDoItem;
 
 import java.util.List;
 import java.util.Optional;

@@ -1,11 +1,11 @@
-package org.example.todo.list.controller;
+package org.example.house.manager.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.example.todo.list.domain.ToDoItem;
-import org.example.todo.list.domain.error.ErrorResponse;
-import org.example.todo.list.domain.error.NotFoundException;
-import org.example.todo.list.service.ToDoListService;
-import org.example.todo.list.service.ToDoListServiceTest;
+import org.example.house.manager.error.ErrorResponse;
+import org.example.house.manager.error.NotFoundException;
+import org.example.house.manager.todolist.ToDoListService;
+import org.example.house.manager.todolist.domain.ToDoItem;
+import org.example.house.manager.todolist.service.ToDoListServiceTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -29,9 +29,9 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(ToDoListController.class)
+@WebMvcTest(HouseManagerController.class)
 @ExtendWith(MockitoExtension.class)
-public class ToDoListControllerTest {
+public class HouseManagerControllerTest {
 
     @MockBean
     private ToDoListService toDoListService;

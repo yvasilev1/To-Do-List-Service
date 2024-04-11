@@ -1,7 +1,7 @@
-package org.example.todo.list.validation;
+package org.example.house.manager.validation;
 
 import jakarta.validation.ConstraintValidatorContext;
-import org.example.todo.list.domain.ItemStatus;
+import org.example.house.manager.todolist.domain.ItemStatus;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

@@ -1,4 +1,4 @@
-package org.example.todo.list.domain;
+package org.example.house.manager.todolist.domain;
 
 import lombok.Getter;
 import lombok.ToString;

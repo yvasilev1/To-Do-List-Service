@@ -1,9 +1,9 @@
-package org.example.todo.list.service;
+package org.example.house.manager.todolist;
 
-import org.example.todo.list.dao.ToDoListRepository;
-import org.example.todo.list.domain.ToDoItem;
-import org.example.todo.list.domain.error.ErrorResponse;
-import org.example.todo.list.domain.error.NotFoundException;
+import org.example.house.manager.error.ErrorResponse;
+import org.example.house.manager.error.NotFoundException;
+import org.example.house.manager.todolist.dao.ToDoListRepository;
+import org.example.house.manager.todolist.domain.ToDoItem;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
