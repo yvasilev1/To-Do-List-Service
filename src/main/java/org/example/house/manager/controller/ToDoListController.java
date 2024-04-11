@@ -15,21 +15,21 @@ import java.util.Optional;
 import java.util.UUID;
 
 @RestController
-@RequestMapping(value = "/housemanager")
-public class HouseManagerController {
+@RequestMapping(value = "/todolist")
+public class ToDoListController {
     public final ToDoListService toDoListService;
 
-    public HouseManagerController(ToDoListService toDoListService) {
+    public ToDoListController(ToDoListService toDoListService) {
         this.toDoListService = toDoListService;
     }
 
-    @PostMapping(value = "/todolist/addToDoItem", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/addToDoItem", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public ToDoItem addToDoItem(@Valid @RequestBody ToDoItem toDoItem) {
         return toDoListService.addToDoItem(toDoItem);
     }
 
-    @PutMapping("/todolist/updateById/{id}")
+    @PutMapping("/updateById/{id}")
     @ResponseBody
     public Optional<ToDoItem> updateToDoItemById(@PathVariable("id") UUID id, @Valid @RequestBody ToDoItem toDoItem) {
         int success = toDoListService.updateToDoItemById(id, toDoItem.getTitle(), toDoItem.getDescription(), toDoItem.getStatus());
@@ -41,19 +41,19 @@ public class HouseManagerController {
         throw new NotFoundException(new ErrorResponse(404, "No TODO item found with provided Id"));
     }
 
-    @GetMapping(value = "/todolist/getAllToDoItems", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/getAllToDoItems", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public List<ToDoItem> getAllToDoItems() {
         return toDoListService.getAllToDoItems();
     }
 
-    @GetMapping(value = "/todolist/getToDoItem/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/getToDoItem/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public Optional<ToDoItem> getToDoItemById(@PathVariable("id") UUID id) {
         return toDoListService.getToDoItemById(id);
     }
 
-    @DeleteMapping(value = "/todolist/deleteToDoItem/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @DeleteMapping(value = "/deleteToDoItem/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<HttpStatus> deleteToDoItem(@PathVariable("id") UUID id) {
         int deletedItems = toDoListService.deleteToDoItemById(id);
 

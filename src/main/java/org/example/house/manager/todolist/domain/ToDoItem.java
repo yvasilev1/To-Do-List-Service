@@ -18,7 +18,8 @@ import java.util.UUID;
 @Setter
 @NoArgsConstructor
 @ToString
-@Entity(name = "t_todoitem")
+@Entity
+@Table(name = "t_todoitem", schema = "todo_list_data")
 public class ToDoItem {
 
     @Id
