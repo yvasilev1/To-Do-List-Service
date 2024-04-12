@@ -29,9 +29,9 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(HouseManagerController.class)
+@WebMvcTest(ToDoListController.class)
 @ExtendWith(MockitoExtension.class)
-public class HouseManagerControllerTest {
+public class ToDoListControllerTest {
 
     @MockBean
     private ToDoListService toDoListService;
