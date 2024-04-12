@@ -1,6 +1,7 @@
-package org.example.house.manager.inventorymanager.domain;
+package org.example.house.manager.inventorymanager.location.domain;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -25,6 +26,7 @@ public class Location {
     @Column(name = "id", nullable = false)
     @JdbcTypeCode(SqlTypes.UUID)
     private UUID id;
+    @NotBlank(message = "Location is mandatory")
     private String name;
 
     @Override

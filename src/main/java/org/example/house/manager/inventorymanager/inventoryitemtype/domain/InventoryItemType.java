@@ -1,6 +1,7 @@
-package org.example.house.manager.inventorymanager.domain;
+package org.example.house.manager.inventorymanager.inventoryitemtype.domain;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -24,6 +25,7 @@ public class InventoryItemType {
     @Column(name = "id", nullable = false)
     @JdbcTypeCode(SqlTypes.UUID)
     private UUID id;
+    @NotBlank(message = "Inventory item type is mandatory")
     private String name;
 
     @Override

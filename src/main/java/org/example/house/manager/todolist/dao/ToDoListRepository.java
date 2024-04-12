@@ -16,11 +16,12 @@ public interface ToDoListRepository extends CrudRepository<ToDoItem, UUID> {
 
     @Transactional
     @Modifying
-    @Query("update t_todoitem t set t.title = ?1, t.description = ?2, t.status = ?3 where t.id = ?4")
+    @Query("update ToDoItem t set t.title = ?1, t.description = ?2, t.status = ?3 where t.id = ?4")
     int updateById(@NonNull String title, @NonNull String description, @NonNull String status, @NonNull UUID id);
 
     @Transactional
     @Modifying
-    @Query("delete from t_todoitem t where t.id = ?1")
+    @Query("delete from ToDoItem t where t.id = ?1")
     int deleteToDoItemById(@NonNull UUID id);
+
 }

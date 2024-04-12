@@ -1,6 +1,7 @@
-package org.example.house.manager.inventorymanager.domain;
+package org.example.house.manager.inventorymanager.quantity.domain;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -16,21 +17,22 @@ import java.util.UUID;
 @ToString
 @RequiredArgsConstructor
 @Entity
-@Table(name = "t_category", schema = "inventory_manager_data")
-public class Category {
+@Table(name = "t_quantity_type", schema = "inventory_manager_data")
+public class QuantityType {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "id", nullable = false)
     @JdbcTypeCode(SqlTypes.UUID)
     private UUID id;
+    @NotBlank(message = "Quantity type is mandatory")
     private String name;
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof Category category)) return false;
-        return Objects.equals(id, category.id) && Objects.equals(name, category.name);
+        if (!(o instanceof QuantityType that)) return false;
+        return Objects.equals(id, that.id) && Objects.equals(name, that.name);
     }
 
     @Override

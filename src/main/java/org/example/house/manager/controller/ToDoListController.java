@@ -53,7 +53,7 @@ public class ToDoListController {
         return toDoListService.getToDoItemById(id);
     }
 
-    @DeleteMapping(value = "/deleteToDoItem/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @DeleteMapping(value = "/deleteToDoItem/{id}")
     public ResponseEntity<HttpStatus> deleteToDoItem(@PathVariable("id") UUID id) {
         int deletedItems = toDoListService.deleteToDoItemById(id);
 
